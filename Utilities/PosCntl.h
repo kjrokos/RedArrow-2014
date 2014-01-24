@@ -12,8 +12,8 @@ private:
 	
 public:
 	//Constructors
-	poscntl();
-	poscntl(float k);
+	poscntl::poscntl();
+	poscntl::poscntl(float k);
 	
 	
 	float FB(int cp, int tp);	//Feedback Function

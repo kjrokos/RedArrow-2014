@@ -10,8 +10,8 @@
 #define __First_2013__DriveCommands__
 
 #include <iostream>
-#include "../Utilities/Motion.h"
-#include "../Utilities/PosCntl.h"
+#include "../Utilities/motion.h"
+#include "../Utilities/poscntl.h"
 
 class DriveTrain;
 

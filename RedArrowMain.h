@@ -1,4 +1,5 @@
 #include "WPILib.h"
+#include "SmartDashboard/SmartDashboard.h"
 
 #include "Utilities/CxTimer.h"
 #include "Utilities/AutonomousManager.h"
@@ -7,6 +8,7 @@
 #include "Subsystems/TwoStateServoControl.h"
 #include "Subsystems/PotentiometerControl.h"
 #include "Subsystems/DriveTrain.h"
+#include "Subsystems/ShooterControl.h"
 
 //#define ARM_TYPE_POT
 
@@ -34,6 +36,7 @@ public:
 	void AutonomousPeriodic(void);
 	void TeleopPeriodic(void);
 	
+	
 	void GetDS();
 	void ResetSubsystems();
 	bool UpdateSubsystems();
@@ -53,17 +56,19 @@ public:
 	FeederControl *m_feeder;
 	TwoStateServoControl *m_flag;
 	TwoStateServoControl *m_unjammer;
-	Talon *m_shooter;
+	ShooterControl *m_shooter;
 	Talon *m_climber;
 	PotentiometerControl *m_elevation;
+	//Jaguar *m_elevation;
 	Gyro *m_gyro;
+	
+	AnalogChannel *m_pot;
 	
 private:
 	AutonomousManager<BuiltinDefaultCode> *m_autonomousManager;
+				
+	//float m_setposition;
 	
-	//Camera
-	AxisCamera *camera;
-		
 	float RSy;
 	float RSx;
 	float RSz;
@@ -95,13 +100,11 @@ private:
 	bool LS_B10;
 	bool LS_B11;
 	
-	float m_shooterSpeed;
-	
 	
 	// Declare a variable to use to access the driver station object
 	DriverStation *m_ds;						// driver station object
-	SendableChooser *m_autonomousModeChooser;
-	
+	//SendableChooser *m_autonomousModeChooser;
+	float m_shooterSpeed;
 	// Declare variables for the two joysticks being used
 	Joystick *m_rightStick;			// joystick 1 (arcade stick or right tank stick)
 	Joystick *m_leftStick;			// joystick 2 (tank left stick)

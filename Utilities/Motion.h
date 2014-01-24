@@ -12,15 +12,15 @@ private:
 	
 public:
 	//Constructors
-	Motion();
-	Motion(float k);
+	Motion::Motion();
+	Motion::Motion(float k);
 	
 	double P345(double t);					//Position 345 Polynomial
 	double V345(double t);					//Velocity 345 Polynomial
 	
 	float FB(float k, float pa, float ps);	//Feedback Function
 	
-	float AdjustVelocity(int currentCount, double time);
+	float Motion::AdjustVelocity(int currentCount, double time);
 	void Reset(int count, double time, float move, double runTime);
 	void Reset();
 	

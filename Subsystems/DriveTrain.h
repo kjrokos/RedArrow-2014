@@ -20,6 +20,7 @@ public:
     static const float kEncoderCountsPerMeter;
     static const float kMaxVelocityMetersPerSecond;
     static const float kMaxRotationDegreesPerSecond;
+    static const float kTimeRequiredToAccelerateToMaxVelocity;
     
 public:
     DriveTrain(uint32_t leftMotorChannel, uint32_t rightMotorChannel, uint32_t leftEncoderA, uint32_t leftEncoderB, uint32_t rightEncoderA, uint32_t rightEncoderB, uint32_t gyroChannel);

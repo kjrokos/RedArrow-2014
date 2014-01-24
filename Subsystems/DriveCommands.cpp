@@ -8,7 +8,7 @@
 
 #include "DriveCommands.h"
 #include "DriveTrain.h"
-//#include "math.h"
+#include "math.h"
 
 namespace Drive {
     
@@ -43,7 +43,7 @@ namespace Drive {
     Distance::Distance(DriveTrain *drive, float meters)
     :DriveCommand(drive),
     m_meters(meters),
-    m_seconds((meters / drive->kMaxVelocityMetersPerSecond) + 1),
+    m_seconds(fabs(meters / drive->kMaxVelocityMetersPerSecond) + drive->kTimeRequiredToAccelerateToMaxVelocity * 2),
     m_pMotionDriveLeft(new Motion(0.06)),
     m_pMotionDriveRight(new Motion(0.06))
     {
@@ -74,9 +74,9 @@ namespace Drive {
         float leftPower = m_pMotionDriveLeft->AdjustVelocity(m_driveTrain->GetLeftEncoder(), currentTime);
         float rightPower = m_pMotionDriveRight->AdjustVelocity(m_driveTrain->GetRightEncoder(), currentTime);
 
-        //if(leftPower < 0.01 && leftPower > -0.01 &&
-        //   rightPower < 0.01 && rightPower > -0.01)
-        if(leftPower == 0 && rightPower == 0)
+        if(leftPower < 0.01 && leftPower > -0.01 &&
+           rightPower < 0.01 && rightPower > -0.01)
+        //if(leftPower == 0 && rightPower == 0)
         {
             leftPower = 0;
             rightPower = 0;

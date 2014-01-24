@@ -12,8 +12,8 @@ private:
 	
 public:
 	//Constructors
-	speedcntl();
-	speedcntl(double pki, double iki, double minperiodi);
+	speedcntl::speedcntl();
+	speedcntl::speedcntl(double pki, double iki, double minperiodi);
 	void reset();
 	void reset(double pki, double iki);
 	

@@ -33,7 +33,6 @@ private:
     uint32_t m_timeout;
 };
 
-
 template<class Robot>
 class AutonomousManager
 {

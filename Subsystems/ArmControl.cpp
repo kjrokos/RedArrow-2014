@@ -85,6 +85,7 @@ bool ArmControl::Update()
 	if(m_manualControl)
 	{
 		m_armActuator->Set(m_manualControlSpeed);
+		m_manualControlSpeed = 0;
 		return true;
 	}
 	else

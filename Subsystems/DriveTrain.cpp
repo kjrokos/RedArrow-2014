@@ -8,9 +8,10 @@
 
 #include "DriveTrain.h"
 
-const float DriveTrain::kEncoderCountsPerMeter = 1159;
+const float DriveTrain::kEncoderCountsPerMeter = 3437.7;
 const float DriveTrain::kMaxVelocityMetersPerSecond = 1.f;
 const float DriveTrain::kMaxRotationDegreesPerSecond = 60;
+const float DriveTrain::kTimeRequiredToAccelerateToMaxVelocity = .5;
 
 
 
@@ -71,12 +72,16 @@ void DriveTrain::StopEncoders()
 
 int DriveTrain::GetLeftEncoder()
 {
-    return m_pLeftDriveEncoder->Get();
+    int Temp = m_pLeftDriveEncoder->Get();
+    SmartDashboard::PutNumber("LeftEncoder", Temp);
+	return Temp;
 }
 
 int DriveTrain::GetRightEncoder()
 {
-    return m_pLeftDriveEncoder->Get();
+    int Temp = m_pRightDriveEncoder->Get();
+	SmartDashboard::PutNumber("RightEncoder", Temp);
+	return Temp;
 }
 
 void DriveTrain::ResetAngle()
