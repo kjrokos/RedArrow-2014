@@ -133,8 +133,10 @@ bool DriveTrain::Update()
     
     printf("Command Queue Size %d\n", m_commandQueue.size()); 
     
-    if(m_commandQueue.size() == 0)
-        return true;
+    if(m_commandQueue.size() == 0) {
+        this->SetLeftRightMotorOutputs(0,0);
+    	return true;
+    }
     
     bool finished = (m_commandQueue.front())->Update();
     

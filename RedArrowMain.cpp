@@ -3,19 +3,14 @@
 
 #define LEFT_DRIVE_PWM 1
 #define RIGHT_DRIVE_PWM 2
-#define ARM_PWM 3
-#define SHOOTER_PWM 6
-#define CLIMBER_PWM 5 
-#define ELEVATION_PWM 4
+#define ROLLER_PWM 3
+#define SHOOTER_PWM 4
 
 #define FLAG_SERVO 9
-#define UNJAMMER_SERVO 10
 
-#define FEEDER_RELAY 1
+#define LOWER_DI 1
+#define UPPER_DI 2
 
-#define ARM_UP_LS 1
-#define ARM_DOWN_LS 2
-#define FEEDER_LS 3
 #define LEFT_DRIVE_ENC_A 6
 #define LEFT_DRIVE_ENC_B 7
 #define RIGHT_DRIVE_ENC_A 8
@@ -43,10 +38,10 @@ NextState AutonomousProgramA(BuiltinDefaultCode *robot, int32_t state)
 		//robot->m_robotDrive->SetSafetyEnabled(false);
 		robot->m_robotDrive->DriveDistance(1);
 		//robot->m_robotDrive->Rotate(90);
-		
+
 		return NextState::EndState();
 		break;
-	/*case 1:
+		/*case 1:
 		if(robot->m_feeder->GetNumberOfFeeds() >= 3)
 		{
 			robot->m_shooter->Set(0);
@@ -56,7 +51,7 @@ NextState AutonomousProgramA(BuiltinDefaultCode *robot, int32_t state)
 		robot->m_feeder->Feed();
 		return NextState(1,2,3);
 		break;
-		*/
+		 */
 	default:
 		break;
 	}
@@ -159,7 +154,7 @@ NextState AutonomousProgramC(BuiltinDefaultCode *robot, int32_t state)
 	}
 	return NextState::EndState();
 };
-*/
+ */
 
 /**
  * Constructor for this "BuiltinDefaultCode" Class.
@@ -173,38 +168,26 @@ BuiltinDefaultCode::BuiltinDefaultCode(void)
 
 	// Create a robot using standard right/left robot drive on PWMS 1, 2,
 	m_robotDrive = //new RobotDrive(LEFT_DRIVE_PWM, RIGHT_DRIVE_PWM);
-				new DriveTrain(LEFT_DRIVE_PWM, RIGHT_DRIVE_PWM,LEFT_DRIVE_ENC_A, LEFT_DRIVE_ENC_B, RIGHT_DRIVE_ENC_A, RIGHT_DRIVE_ENC_B, GYRO);
-	
-	m_feeder = new FeederControl(FEEDER_RELAY, FEEDER_LS);
-#ifdef ARM_TYPE_POT
-	m_arm = new PotentiometerControl(ARM_PWM, ARM_POT, 70, 600);
-#else
-	m_arm = new ArmControl(ARM_PWM, ARM_UP_LS, ARM_DOWN_LS);
-#endif
-	m_shooter = new ShooterControl(SHOOTER_PWM);
-	m_climber = new Talon(CLIMBER_PWM);
-	m_elevation = new PotentiometerControl(ELEVATION_PWM, ELEVATION_POT, 320, 850, 0.06);
-	//m_elevation = new Jaguar(ELEVATION_PWM);
-	m_unjammer = new TwoStateServoControl(UNJAMMER_SERVO, 0, .915);
+			new DriveTrain(LEFT_DRIVE_PWM, RIGHT_DRIVE_PWM,LEFT_DRIVE_ENC_A, LEFT_DRIVE_ENC_B, RIGHT_DRIVE_ENC_A, RIGHT_DRIVE_ENC_B, GYRO);
+
+	m_shooter = new ShooterControl(SHOOTER_PWM, LOWER_DI, UPPER_DI);
 	m_flag = new TwoStateServoControl(FLAG_SERVO, 0.66, 0.10);
-	m_gyro = new Gyro(1);
-	m_pot = new AnalogChannel(ARM_POT);
-	
+	m_roller = new MotorControl(ROLLER_PWM, .5);
+	//m_pot = new AnalogChannel(ARM_POT);
+
 	// Initialize AutonomousManager
 	m_autonomousManager = new AutonomousManager<BuiltinDefaultCode>(this, 0, 0);
-	
+
 	// Acquire the Driver Station object
 	m_ds = DriverStation::GetInstance();
-	
-	//m_autonomousModeChooser = new SendableChooser();
-	
+
+	m_autonomousModeChooser = new SendableChooser();
+
 	// Define joysticks being used at USB port #1 and USB port #2 on the Drivers Station
 	m_rightStick = new Joystick(1);
 	m_leftStick = new Joystick(2);
 	m_t1=new CxTimer();
 	m_t1->Reset();
-
-	m_shooterSpeed=0;
 
 	ResetSubsystems();
 
@@ -213,22 +196,17 @@ BuiltinDefaultCode::BuiltinDefaultCode(void)
 BuiltinDefaultCode::~BuiltinDefaultCode(void)
 {
 	delete m_robotDrive;
-	delete m_arm;
-	delete m_feeder;
-	delete m_elevation;
-	delete m_climber;
 	delete m_ds;
 	delete m_rightStick;
 	delete m_leftStick;
 	delete m_flag;
-	delete m_unjammer;
 	delete m_t1;
 	delete m_shooter;
 	delete m_autonomousManager;
-	delete m_gyro;
-	
-	delete m_pot;
-	//delete m_autonomousModeChooser;
+	delete m_roller;
+
+	//delete m_pot;
+	delete m_autonomousModeChooser;
 }
 
 
@@ -238,10 +216,10 @@ void BuiltinDefaultCode::RobotInit(void)
 {
 	// Actions which would be performed once (and only once) upon initialization of the
 	// robot would be put here.
-	
-	//m_autonomousModeChooser->AddDefault("A: Shoot from back side", new std::string("side"));
-	//m_autonomousModeChooser->AddObject("B: Shoot from middle", new std::string("middle"));
-	//SmartDashboard::PutData("Autonomous Mode", m_autonomousModeChooser);
+
+	m_autonomousModeChooser->AddDefault("A: Test", new std::string("side"));
+	m_autonomousModeChooser->AddObject("B: Test", new std::string("middle"));
+	SmartDashboard::PutData("Autonomous Mode", m_autonomousModeChooser);
 	//Camera Initalization
 
 
@@ -257,13 +235,16 @@ void BuiltinDefaultCode::AutonomousInit(void)
 {
 	ResetSubsystems();
 	m_robotDrive->StartEncoders();
-	/*std::string mode = *((std::string*)m_autonomousModeChooser->GetSelected());
+	std::string mode = *((std::string*)m_autonomousModeChooser->GetSelected());
 	SmartDashboard::PutString("Autonomous Mode", mode);
+	/*
 	if(mode == "middle")
 		m_autonomousManager->SetStartState(AutonomousProgramB, 0);
 	else
 		m_autonomousManager->SetStartState(AutonomousProgramA, 0);
-	*/
+	 */
+	this->m_watchdog.SetExpiration(0.2);
+	m_robotDrive->SetExpiration(0.2);
 	m_autonomousManager->SetStartState(AutonomousProgramA, 0);
 	//m_autonomousManager->SetStartState(AutonomousProgramB, 0);
 	//m_autonomousManager->SetStartState(AutonomousProgramC, 0);
@@ -284,11 +265,8 @@ void BuiltinDefaultCode::DisabledPeriodic(void)
 void BuiltinDefaultCode::AutonomousPeriodic(void) 
 {
 	CxTimer::Update();
-	
+	this->m_watchdog.Feed();
 	m_autonomousManager->Run();
-	
-	SmartDashboard::PutNumber("PotentiometerElevation", (uint16_t) m_elevation->GetPosition());
-	
 }
 
 
@@ -299,18 +277,33 @@ void BuiltinDefaultCode::TeleopPeriodic(void)
 	GetDS();
 	//bool leftJoystickIsUsed = false;
 
-	
-	
-		m_robotDrive->ArcadeDrive(-RSy ,-RSx);			// drive with arcade style (use right stick)
-	
-	
+
+
+	m_robotDrive->ArcadeDrive(-RSy ,-RSx);			// drive with arcade style (use right stick)
+
+
 	// do logic for decisions
 	if(LS_B1)			//Shoot Ball
 	{
 		m_shooter->Shoot();
 	}
+	if(LS_B4)
+	{
+		m_shooter->ManualControl(LSy);
+	}
+	if(LS_B2)
+	{
+		m_roller->SpinCounterClockwise();
+		m_roller->SpeedAdjust((LSz+1)/2.0);
+	}
+	else if(LS_B3)
+	{
+		m_roller->SpinClockwise();
+		m_roller->SpeedAdjust((LSz+1)/2.0);
+	}
 	
-		UpdateSubsystems();
+	
+	UpdateSubsystems();
 } // TeleopPeriodic(void)
 
 void BuiltinDefaultCode::GetDS()
@@ -354,7 +347,7 @@ void BuiltinDefaultCode::GetDS()
 	SmartDashboard::PutNumber("LSx",(double)LSx);
 	SmartDashboard::PutNumber("LSy",(double)LSy);
 	SmartDashboard::PutNumber("LSz", (double)LSz);
-	
+
 	SmartDashboard::PutNumber("CodeVersion", 6);
 
 }
@@ -362,7 +355,7 @@ void BuiltinDefaultCode::GetDS()
 void BuiltinDefaultCode::ResetSubsystems()
 {
 	//m_setposition = 0;
-	
+
 	RSx=0;
 	RSy=0;
 	RSx=0;
@@ -391,33 +384,25 @@ void BuiltinDefaultCode::ResetSubsystems()
 	LS_B9=false;
 	LS_B10=false;
 	LS_B11=false;
-	
-	m_arm->Reset();
-	m_feeder->Reset();
+
 	m_flag->Reset();
-	m_elevation->Reset();
 	m_robotDrive->Reset();
-	m_shooterSpeed = 0;
 	m_shooter->Reset();
-	m_climber->Set(0);
-	m_unjammer->Reset();
-	m_unjammer->Raise();
+	m_roller->Reset();
 }
 
 bool BuiltinDefaultCode::UpdateSubsystems()
 {
 	m_robotDrive->GetLeftEncoder();
 	m_robotDrive->GetRightEncoder();
-	
+
 	bool finished = true;
 	finished = m_shooter->Update()    && finished;
-	finished = m_arm->Update()    && finished;
-	finished = m_feeder->Update() && finished;
 	finished = m_flag->Update()   && finished;
-	finished = m_unjammer->Update() &&finished;
-	finished = m_elevation->Update() && finished;
 	finished = m_robotDrive->Update() && finished;
+	finished = m_roller->Update() && finished;
 	return finished;
+
 }
 
 START_ROBOT_CLASS(BuiltinDefaultCode);

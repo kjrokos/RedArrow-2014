@@ -74,8 +74,8 @@ namespace Drive {
         float leftPower = m_pMotionDriveLeft->AdjustVelocity(m_driveTrain->GetLeftEncoder(), currentTime);
         float rightPower = m_pMotionDriveRight->AdjustVelocity(m_driveTrain->GetRightEncoder(), currentTime);
 
-        if(leftPower < 0.01 && leftPower > -0.01 &&
-           rightPower < 0.01 && rightPower > -0.01)
+        if(-0.01 < leftPower  && leftPower  < 0.01 &&
+           -0.01 < rightPower && rightPower < 0.01)
         //if(leftPower == 0 && rightPower == 0)
         {
             leftPower = 0;

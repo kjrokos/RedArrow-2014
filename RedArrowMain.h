@@ -9,8 +9,8 @@
 #include "Subsystems/PotentiometerControl.h"
 #include "Subsystems/DriveTrain.h"
 #include "Subsystems/ShooterControl.h"
+#include "Subsystems/MotorControl.h"
 
-//#define ARM_TYPE_POT
 
 class BuiltinDefaultCode : public IterativeRobot
 {
@@ -44,31 +44,18 @@ public:
 	
 //private:
 	// Declare variale for the robot drive system
-	//RobotDrive *m_robotDrive;		// robot will use PWM 1-2 for drive motors
 	DriveTrain *m_robotDrive;
 	
 	CxTimer *m_t1;
-#ifdef ARM_TYPE_POT
-	PotentiometerControl *m_arm;
-#else
-	ArmControl *m_arm;
-#endif
-	FeederControl *m_feeder;
+
 	TwoStateServoControl *m_flag;
-	TwoStateServoControl *m_unjammer;
 	ShooterControl *m_shooter;
-	Talon *m_climber;
-	PotentiometerControl *m_elevation;
-	//Jaguar *m_elevation;
-	Gyro *m_gyro;
-	
-	AnalogChannel *m_pot;
+	MotorControl *m_roller;
+	//AnalogChannel *m_pot;
 	
 private:
 	AutonomousManager<BuiltinDefaultCode> *m_autonomousManager;
-				
-	//float m_setposition;
-	
+					
 	float RSy;
 	float RSx;
 	float RSz;
@@ -103,8 +90,8 @@ private:
 	
 	// Declare a variable to use to access the driver station object
 	DriverStation *m_ds;						// driver station object
-	//SendableChooser *m_autonomousModeChooser;
-	float m_shooterSpeed;
+	SendableChooser *m_autonomousModeChooser;
+	
 	// Declare variables for the two joysticks being used
 	Joystick *m_rightStick;			// joystick 1 (arcade stick or right tank stick)
 	Joystick *m_leftStick;			// joystick 2 (tank left stick)
