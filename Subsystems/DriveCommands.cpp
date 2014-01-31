@@ -34,6 +34,7 @@ namespace Drive {
     :DriveCommand(drive),
     m_meters(meters),
     m_seconds(seconds),
+    m_hasStarted(false), 
     m_pMotionDriveLeft(new Motion(0.06)),
     m_pMotionDriveRight(new Motion(0.06))
     {
@@ -44,6 +45,7 @@ namespace Drive {
     :DriveCommand(drive),
     m_meters(meters),
     m_seconds(fabs(meters / drive->kMaxVelocityMetersPerSecond) + drive->kTimeRequiredToAccelerateToMaxVelocity * 2),
+    m_hasStarted(false),
     m_pMotionDriveLeft(new Motion(0.06)),
     m_pMotionDriveRight(new Motion(0.06))
     {
@@ -63,19 +65,24 @@ namespace Drive {
         
         m_pMotionDriveLeft->Reset(m_driveTrain->GetLeftEncoder(), currentTime, m_meters * m_driveTrain->kEncoderCountsPerMeter, m_seconds);
         m_pMotionDriveRight->Reset(m_driveTrain->GetRightEncoder(), currentTime,m_meters * m_driveTrain->kEncoderCountsPerMeter, m_seconds);
+        printf("In CommandInit(): LE: %f RE: %f Time: %f Clicks: %f Secs: %f\n", (double)m_driveTrain->GetLeftEncoder(), (double)m_driveTrain->GetRightEncoder(), currentTime, m_meters * m_driveTrain->kEncoderCountsPerMeter, m_seconds);
         return true;
     }
     
     bool Distance::CommandUpdate()
-    {
-        bool finished = false;
+    { 
+    	bool finished = false;
         
         double currentTime = Timer::GetPPCTimestamp();
         float leftPower = m_pMotionDriveLeft->AdjustVelocity(m_driveTrain->GetLeftEncoder(), currentTime);
-        float rightPower = m_pMotionDriveRight->AdjustVelocity(m_driveTrain->GetRightEncoder(), currentTime);
-
+        float rightPower = -m_pMotionDriveRight->AdjustVelocity(m_driveTrain->GetRightEncoder(), currentTime);
+        if((.01 < leftPower || leftPower < -.01 )&&
+        	(.01 < rightPower || rightPower < -.01))
+        {
+        	m_hasStarted = true;
+        }
         if(-0.01 < leftPower  && leftPower  < 0.01 &&
-           -0.01 < rightPower && rightPower < 0.01)
+           -0.01 < rightPower && rightPower < 0.01 && m_hasStarted == true)
         //if(leftPower == 0 && rightPower == 0)
         {
             leftPower = 0;
@@ -83,6 +90,7 @@ namespace Drive {
             finished = true;
         }
         printf("In CommandUpdate::Distance setDistance = %f powerL=%f, powerR=%f\n", m_meters, leftPower, rightPower);
+        printf("	Current time = %f LeftEncoder = %f RightEncoder = %f\n", currentTime, (double) m_driveTrain->GetLeftEncoder(), (double) m_driveTrain->GetRightEncoder());
         m_driveTrain->TankDrive(leftPower, rightPower);
         
         return finished;
@@ -124,7 +132,7 @@ namespace Drive {
             power = 0;
             finished = true;
         }
-        m_driveTrain->TankDrive(-power, power);
+        m_driveTrain->TankDrive(power, power);
         
         return finished;
     }

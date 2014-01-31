@@ -17,8 +17,7 @@
 #define RIGHT_DRIVE_ENC_B 9
 
 #define GYRO 1
-#define ELEVATION_POT 2
-#define ARM_POT 3
+#define SHOOTER_POT 2
 
 
 
@@ -36,7 +35,7 @@ NextState AutonomousProgramA(BuiltinDefaultCode *robot, int32_t state)
 		//robot->m_feeder->ResetNumberOfFeeds();
 		//robot->m_unjammer->Lower();
 		//robot->m_robotDrive->SetSafetyEnabled(false);
-		robot->m_robotDrive->DriveDistance(1);
+		robot->m_robotDrive->DriveDistance(.1,10);
 		//robot->m_robotDrive->Rotate(90);
 
 		return NextState::EndState();
@@ -172,8 +171,8 @@ BuiltinDefaultCode::BuiltinDefaultCode(void)
 
 	m_shooter = new ShooterControl(SHOOTER_PWM, LOWER_DI, UPPER_DI);
 	m_flag = new TwoStateServoControl(FLAG_SERVO, 0.66, 0.10);
-	m_roller = new MotorControl(ROLLER_PWM, .5);
-	//m_pot = new AnalogChannel(ARM_POT);
+	m_roller = new MotorControl(ROLLER_PWM, 1);
+	
 
 	// Initialize AutonomousManager
 	m_autonomousManager = new AutonomousManager<BuiltinDefaultCode>(this, 0, 0);
@@ -234,7 +233,7 @@ void BuiltinDefaultCode::DisabledInit(void)
 void BuiltinDefaultCode::AutonomousInit(void) 
 {
 	ResetSubsystems();
-	m_robotDrive->StartEncoders();
+	//m_robotDrive->StartEncoders();
 	std::string mode = *((std::string*)m_autonomousModeChooser->GetSelected());
 	SmartDashboard::PutString("Autonomous Mode", mode);
 	/*
@@ -253,7 +252,7 @@ void BuiltinDefaultCode::AutonomousInit(void)
 void BuiltinDefaultCode::TeleopInit(void) 
 {	
 	ResetSubsystems();
-	m_robotDrive->StartEncoders();
+	//m_robotDrive->StartEncoders();
 }
 
 /********************************** Periodic Routines *************************************/
@@ -347,6 +346,7 @@ void BuiltinDefaultCode::GetDS()
 	SmartDashboard::PutNumber("LSx",(double)LSx);
 	SmartDashboard::PutNumber("LSy",(double)LSy);
 	SmartDashboard::PutNumber("LSz", (double)LSz);
+	
 
 	SmartDashboard::PutNumber("CodeVersion", 6);
 
@@ -393,8 +393,8 @@ void BuiltinDefaultCode::ResetSubsystems()
 
 bool BuiltinDefaultCode::UpdateSubsystems()
 {
-	m_robotDrive->GetLeftEncoder();
-	m_robotDrive->GetRightEncoder();
+	//m_robotDrive->GetLeftEncoder();
+	//m_robotDrive->GetRightEncoder();
 
 	bool finished = true;
 	finished = m_shooter->Update()    && finished;

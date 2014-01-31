@@ -41,9 +41,25 @@ float Motion::FB(float m_k, float pa, float ps)	//Feedbacm_k Algorithm
 float Motion::AdjustVelocity(int currentCount, double time)
 {
 	float ReLT;
-	if(time-Motion::m_initTime>Motion::m_runTime) {ReLT=1;m_active=false;} else ReLT=((time-Motion::m_initTime)/Motion::m_runTime);
+	if(time-Motion::m_initTime>Motion::m_runTime) 
+	{
+		ReLT=1;
+		m_active=false;
+	} 
+	else 
+	{
+		ReLT=((time-Motion::m_initTime)/Motion::m_runTime);
+	}
+	
 	float currentP = Motion::m_totalMove*P345(ReLT) + Motion::m_encoderIP;
-	if (m_active)return FB( Motion::m_k, currentP, currentCount); else return 0;
+	
+	if (m_active)
+	{
+		return FB( Motion::m_k, currentP, currentCount); 
+	}
+	else { 
+		return 0;
+	}
 }
 
 void Motion::Reset(int count, double time, float move, double m_runTime)

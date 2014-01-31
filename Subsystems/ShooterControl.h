@@ -7,7 +7,7 @@
 class ShooterControl
 {
 public:
-	ShooterControl(uint32_t outputChannel, uint32_t lowerLimitSwitchChannel, uint32_t upperLimitSwitchChannel);
+	ShooterControl(uint32_t outputChannel, uint32_t lowerLimitSwitchChannel, uint32_t upperLimitSwitchChannel, uint32_t positionChannel);
 	~ShooterControl();
 	
 	void Reset();
@@ -22,10 +22,10 @@ private:
 	
 	float m_speed;
 	int m_stflag;
-	int m_cnt;
 	
 	DigitalInput *m_lowerPosition;
 	DigitalInput *m_upperPosition;
+	AnalogChannel *m_pot;
 };
 
 #endif

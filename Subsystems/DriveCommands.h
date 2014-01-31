@@ -48,6 +48,7 @@ namespace Drive
     protected:
         float m_meters;
         float m_seconds;
+        bool m_hasStarted;
         Motion *m_pMotionDriveLeft;
         Motion *m_pMotionDriveRight;
     };

@@ -9,9 +9,9 @@
 #include "DriveTrain.h"
 
 const float DriveTrain::kEncoderCountsPerMeter = 3437.7;
-const float DriveTrain::kMaxVelocityMetersPerSecond = 1.f;
+const float DriveTrain::kMaxVelocityMetersPerSecond = 1.0;
 const float DriveTrain::kMaxRotationDegreesPerSecond = 60;
-const float DriveTrain::kTimeRequiredToAccelerateToMaxVelocity = .5;
+const float DriveTrain::kTimeRequiredToAccelerateToMaxVelocity = 1.5;
 
 
 
@@ -131,7 +131,7 @@ bool DriveTrain::Update()
     if(m_manualControl)
         return true;
     
-    printf("Command Queue Size %d\n", m_commandQueue.size()); 
+    //printf("Command Queue Size %d\n", m_commandQueue.size()); 
     
     if(m_commandQueue.size() == 0) {
         this->SetLeftRightMotorOutputs(0,0);
