@@ -51,7 +51,6 @@ public:
 	TwoStateServoControl *m_flag;
 	ShooterControl *m_shooter;
 	MotorControl *m_roller;
-	//AnalogChannel *m_pot;
 	
 private:
 	AutonomousManager<BuiltinDefaultCode> *m_autonomousManager;

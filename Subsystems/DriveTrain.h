@@ -17,7 +17,8 @@
 class DriveTrain : public RobotDrive
 {
 public:
-    static const float kEncoderCountsPerMeter;
+	static const float kEncoderCountsPerRevolution;
+	static const float kWheelDiameterInInches;
     static const float kMaxVelocityMetersPerSecond;
     static const float kMaxRotationDegreesPerSecond;
     static const float kTimeRequiredToAccelerateToMaxVelocity;
@@ -31,6 +32,7 @@ public:
     
     void StartEncoders();
     void StopEncoders();
+    float GetEncoderCountsPerMeter();
     int GetLeftEncoder();
     int GetRightEncoder();
     

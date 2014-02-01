@@ -3,13 +3,20 @@
 
 #include "Talon.h"
 #include "DigitalInput.h"
+#include "AnalogChannel.h"
 
 class ShooterControl
 {
 public:
+	static const int kStop;
+	static const int kShoot;
+	static const int kReset;
+	static const int kManualControl;
+public:
 	ShooterControl(uint32_t outputChannel, uint32_t lowerLimitSwitchChannel, uint32_t upperLimitSwitchChannel, uint32_t positionChannel);
 	~ShooterControl();
 	
+	void SetPotDistance(int distance) {m_potDistance=distance;};
 	void Reset();
 	
 	void Shoot();
@@ -26,6 +33,9 @@ private:
 	DigitalInput *m_lowerPosition;
 	DigitalInput *m_upperPosition;
 	AnalogChannel *m_pot;
+	int m_potStart;
+	int m_potDistance;
+	
 };
 
 #endif

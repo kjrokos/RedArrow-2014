@@ -63,9 +63,9 @@ namespace Drive {
         m_driveTrain->StartEncoders();
         double currentTime = Timer::GetPPCTimestamp();
         
-        m_pMotionDriveLeft->Reset(m_driveTrain->GetLeftEncoder(), currentTime, m_meters * m_driveTrain->kEncoderCountsPerMeter, m_seconds);
-        m_pMotionDriveRight->Reset(m_driveTrain->GetRightEncoder(), currentTime,m_meters * m_driveTrain->kEncoderCountsPerMeter, m_seconds);
-        printf("In CommandInit(): LE: %f RE: %f Time: %f Clicks: %f Secs: %f\n", (double)m_driveTrain->GetLeftEncoder(), (double)m_driveTrain->GetRightEncoder(), currentTime, m_meters * m_driveTrain->kEncoderCountsPerMeter, m_seconds);
+        m_pMotionDriveLeft->Reset(m_driveTrain->GetLeftEncoder(), currentTime, m_meters * m_driveTrain->GetEncoderCountsPerMeter(), m_seconds);
+        m_pMotionDriveRight->Reset(m_driveTrain->GetRightEncoder(), currentTime,m_meters * m_driveTrain->GetEncoderCountsPerMeter(), m_seconds);
+        printf("In CommandInit(): LE: %f RE: %f Time: %f Clicks: %f duration: %f\n", (double)m_driveTrain->GetLeftEncoder(), (double)m_driveTrain->GetRightEncoder(), currentTime, m_meters * m_driveTrain->GetEncoderCountsPerMeter(), m_seconds);
         return true;
     }
     

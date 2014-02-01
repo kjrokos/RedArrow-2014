@@ -8,7 +8,8 @@
 
 #include "DriveTrain.h"
 
-const float DriveTrain::kEncoderCountsPerMeter = 3437.7;
+const float DriveTrain::kEncoderCountsPerRevolution = 360;
+const float DriveTrain::kWheelDiameterInInches = 4;
 const float DriveTrain::kMaxVelocityMetersPerSecond = 1.0;
 const float DriveTrain::kMaxRotationDegreesPerSecond = 60;
 const float DriveTrain::kTimeRequiredToAccelerateToMaxVelocity = 1.5;
@@ -68,6 +69,16 @@ void DriveTrain::StopEncoders()
 {
     m_pLeftDriveEncoder->Stop();
     m_pRightDriveEncoder->Stop();
+}
+
+float DriveTrain::GetEncoderCountsPerMeter()
+{
+	float Pi = 3.14159265358979;
+	float inchesPerMeter = 100/2.54; // ~39.4 inches/m
+	float inchesPerWheelRevolution = kWheelDiameterInInches * Pi;
+	float revolutionsPerMeter = inchesPerMeter / inchesPerWheelRevolution;
+	float encoderCountsPerMeter = revolutionsPerMeter * kEncoderCountsPerRevolution;
+	return encoderCountsPerMeter;
 }
 
 int DriveTrain::GetLeftEncoder()

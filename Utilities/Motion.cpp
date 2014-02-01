@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Motion.h"
 #include "math.h"
 
@@ -55,6 +57,7 @@ float Motion::AdjustVelocity(int currentCount, double time)
 	
 	if (m_active)
 	{
+		printf("  Motion::RelativeTime: %f currentP: %f", ReLT, currentP);
 		return FB( Motion::m_k, currentP, currentCount); 
 	}
 	else { 

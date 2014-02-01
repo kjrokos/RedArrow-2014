@@ -35,7 +35,7 @@ NextState AutonomousProgramA(BuiltinDefaultCode *robot, int32_t state)
 		//robot->m_feeder->ResetNumberOfFeeds();
 		//robot->m_unjammer->Lower();
 		//robot->m_robotDrive->SetSafetyEnabled(false);
-		robot->m_robotDrive->DriveDistance(.1,10);
+		robot->m_robotDrive->DriveDistance(.1,2);
 		//robot->m_robotDrive->Rotate(90);
 
 		return NextState::EndState();
@@ -169,7 +169,7 @@ BuiltinDefaultCode::BuiltinDefaultCode(void)
 	m_robotDrive = //new RobotDrive(LEFT_DRIVE_PWM, RIGHT_DRIVE_PWM);
 			new DriveTrain(LEFT_DRIVE_PWM, RIGHT_DRIVE_PWM,LEFT_DRIVE_ENC_A, LEFT_DRIVE_ENC_B, RIGHT_DRIVE_ENC_A, RIGHT_DRIVE_ENC_B, GYRO);
 
-	m_shooter = new ShooterControl(SHOOTER_PWM, LOWER_DI, UPPER_DI);
+	m_shooter = new ShooterControl(SHOOTER_PWM, LOWER_DI, UPPER_DI, SHOOTER_POT);
 	m_flag = new TwoStateServoControl(FLAG_SERVO, 0.66, 0.10);
 	m_roller = new MotorControl(ROLLER_PWM, 1);
 	
@@ -247,12 +247,13 @@ void BuiltinDefaultCode::AutonomousInit(void)
 	m_autonomousManager->SetStartState(AutonomousProgramA, 0);
 	//m_autonomousManager->SetStartState(AutonomousProgramB, 0);
 	//m_autonomousManager->SetStartState(AutonomousProgramC, 0);
+	m_robotDrive->StartEncoders();
 }
 
 void BuiltinDefaultCode::TeleopInit(void) 
 {	
 	ResetSubsystems();
-	//m_robotDrive->StartEncoders();
+	m_robotDrive->StartEncoders();
 }
 
 /********************************** Periodic Routines *************************************/
@@ -301,6 +302,7 @@ void BuiltinDefaultCode::TeleopPeriodic(void)
 		m_roller->SpeedAdjust((LSz+1)/2.0);
 	}
 	
+	m_shooter->SetPotDistance((int)(((RSz+1)/2)*300));
 	
 	UpdateSubsystems();
 } // TeleopPeriodic(void)
@@ -346,7 +348,9 @@ void BuiltinDefaultCode::GetDS()
 	SmartDashboard::PutNumber("LSx",(double)LSx);
 	SmartDashboard::PutNumber("LSy",(double)LSy);
 	SmartDashboard::PutNumber("LSz", (double)LSz);
-	
+
+	m_robotDrive->GetLeftEncoder();
+	m_robotDrive->GetRightEncoder();
 
 	SmartDashboard::PutNumber("CodeVersion", 6);
 
