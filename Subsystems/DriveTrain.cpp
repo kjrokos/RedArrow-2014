@@ -9,6 +9,7 @@
 #include "DriveTrain.h"
 
 const float DriveTrain::kEncoderCountsPerRevolution = 360;
+const float DriveTrain::kChassisDiameterInInches = 29;
 const float DriveTrain::kWheelDiameterInInches = 4;
 const float DriveTrain::kMaxVelocityMetersPerSecond = 1.0;
 const float DriveTrain::kMaxRotationDegreesPerSecond = 60;
@@ -71,16 +72,6 @@ void DriveTrain::StopEncoders()
     m_pRightDriveEncoder->Stop();
 }
 
-float DriveTrain::GetEncoderCountsPerMeter()
-{
-	float Pi = 3.14159265358979;
-	float inchesPerMeter = 100/2.54; // ~39.4 inches/m
-	float inchesPerWheelRevolution = kWheelDiameterInInches * Pi;
-	float revolutionsPerMeter = inchesPerMeter / inchesPerWheelRevolution;
-	float encoderCountsPerMeter = revolutionsPerMeter * kEncoderCountsPerRevolution;
-	return encoderCountsPerMeter;
-}
-
 int DriveTrain::GetLeftEncoder()
 {
     int Temp = m_pLeftDriveEncoder->Get();
@@ -93,6 +84,27 @@ int DriveTrain::GetRightEncoder()
     int Temp = m_pRightDriveEncoder->Get();
 	SmartDashboard::PutNumber("RightEncoder", Temp);
 	return Temp;
+}
+
+float DriveTrain::GetEncoderCountsPerMeter()
+{
+	float Pi = 3.14159265358979;
+	float inchesPerMeter = 100/2.54; // ~39.4 inches/m
+	float inchesPerWheelRevolution = kWheelDiameterInInches * Pi;
+	float revolutionsPerMeter = inchesPerMeter / inchesPerWheelRevolution;
+	float encoderCountsPerMeter = revolutionsPerMeter * kEncoderCountsPerRevolution;
+	return encoderCountsPerMeter;
+}
+
+float DriveTrain::GetEncoderCountsPerDegree()
+{
+	float Pi = 3.14159265358979;
+  float inchesPerChassisRevolution = kChassisDiameterInInches * Pi;
+	float inchesPerWheelRevolution = kWheelDiameterInInches * Pi;
+  float wheelRevolutionsPerChassisRevolution = inchesPerChassisRevolution / inchesPerWheelRevolution;
+  float encoderCountsPerChassisRevolution = wheelRevolutionsPerChassisRevolution * kEncoderCountsPerRevolution;
+  float encoderCountsPerDegree = encoderCountsPerChassisRevolution / 360.0;
+  return encoderCountsPerDegree;
 }
 
 void DriveTrain::ResetAngle()

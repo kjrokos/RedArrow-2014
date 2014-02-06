@@ -16,44 +16,48 @@
 
 class DriveTrain : public RobotDrive
 {
-public:
-	static const float kEncoderCountsPerRevolution;
-	static const float kWheelDiameterInInches;
+  public:
+    static const float kEncoderCountsPerRevolution;
+    static const float kChassisDiameterInInches;
+    static const float kWheelDiameterInInches;
     static const float kMaxVelocityMetersPerSecond;
     static const float kMaxRotationDegreesPerSecond;
     static const float kTimeRequiredToAccelerateToMaxVelocity;
-    
-public:
+
+  public:
     DriveTrain(uint32_t leftMotorChannel, uint32_t rightMotorChannel, uint32_t leftEncoderA, uint32_t leftEncoderB, uint32_t rightEncoderA, uint32_t rightEncoderB, uint32_t gyroChannel);
-    
+
     ~DriveTrain();
-    
+
     void Reset();
-    
+
     void StartEncoders();
     void StopEncoders();
-    float GetEncoderCountsPerMeter();
+
     int GetLeftEncoder();
     int GetRightEncoder();
-    
+
+    float GetEncoderCountsPerMeter();
+    float GetEncoderCountsPerDegree();
+
     void ResetAngle();
     float GetAngle();
-    
+
     void DriveDistance(float meters);
     void DriveDistance(float meters, float seconds);
-    
+
     void Rotate(float degrees);
-    
+
     void ManualControl(float stickX, float stickY, bool arcade=true);
-    
+
     bool Update();
-    
-private:
+
+  private:
 
     bool m_manualControl;
-    
+
     Encoder *m_pLeftDriveEncoder;
-	Encoder *m_pRightDriveEncoder;
+    Encoder *m_pRightDriveEncoder;
     Gyro *m_pGyro;
 
     std::queue<Drive::DriveCommand*> m_commandQueue;
