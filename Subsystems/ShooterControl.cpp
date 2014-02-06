@@ -5,6 +5,7 @@ const int ShooterControl::kStop = 0;
 const int ShooterControl::kShoot = 1;
 const int ShooterControl::kReset = 2;
 const int ShooterControl::kManualControl = 3;
+const int ShooterControl::kSetStartPosition = 4;
 
 
 
@@ -15,7 +16,8 @@ ShooterControl::ShooterControl(uint32_t outputChannel, uint32_t lowerLimitSwitch
 	m_upperPosition(new DigitalInput(upperLimitSwitchChannel)),
 	m_pot(new AnalogChannel(positionChannel)), 
 	m_potStart(750),
-	m_potDistance(382-200)
+	m_potDistance(382-200), 
+	m_setStart(kSetStartPosition)
 {
 	
 }
@@ -31,6 +33,12 @@ void ShooterControl::Reset()
 {
 	m_stflag = kStop;
 }
+
+void ShooterControl::SetStart()
+{
+	m_setStart = kSetStartPosition;
+}
+
 void ShooterControl::Shoot()
 {
 	if(m_stflag == kStop)
@@ -50,9 +58,18 @@ bool ShooterControl::Update()
 	SmartDashboard::PutNumber("Shooter Pot", m_pot->GetValue());
 	SmartDashboard::PutNumber("Start: ", m_potStart);
 	SmartDashboard::PutNumber("Distance: ", m_potDistance);
+	if(m_setStart == kSetStartPosition)
+	{
+		m_potStart = m_pot->GetValue();
+		m_setStart = kStop;
+	}
+	if(m_setStart == kStop)
+	{
+		
+	}
 	if(m_stflag == kShoot)
 	{
-		if(relativePosition > -m_potDistance)
+		if(relativePosition > -m_potDistance && relativePosition <680)
 		{
 			m_speed = 1;
 		}

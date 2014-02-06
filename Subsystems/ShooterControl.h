@@ -12,12 +12,15 @@ public:
 	static const int kShoot;
 	static const int kReset;
 	static const int kManualControl;
+	static const int kSetStartPosition;
 public:
 	ShooterControl(uint32_t outputChannel, uint32_t lowerLimitSwitchChannel, uint32_t upperLimitSwitchChannel, uint32_t positionChannel);
 	~ShooterControl();
 	
 	void SetPotDistance(int distance) {m_potDistance=distance;};
 	void Reset();
+	
+	void SetStart();
 	
 	void Shoot();
 	
@@ -35,6 +38,7 @@ private:
 	AnalogChannel *m_pot;
 	int m_potStart;
 	int m_potDistance;
+	int m_setStart;
 	
 };
 

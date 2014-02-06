@@ -287,6 +287,10 @@ void BuiltinDefaultCode::TeleopPeriodic(void)
 	{
 		m_shooter->Shoot();
 	}
+	if(LS_B7)
+	{
+		m_shooter->SetStart();
+	}
 	if(LS_B4)
 	{
 		m_shooter->ManualControl(LSy);
@@ -294,15 +298,15 @@ void BuiltinDefaultCode::TeleopPeriodic(void)
 	if(LS_B2)
 	{
 		m_roller->SpinCounterClockwise();
-		m_roller->SpeedAdjust((LSz+1)/2.0);
+		m_roller->SpeedAdjust(1.0);
 	}
 	else if(LS_B3)
 	{
 		m_roller->SpinClockwise();
-		m_roller->SpeedAdjust((LSz+1)/2.0);
+		m_roller->SpeedAdjust(1.0);
 	}
 	
-	m_shooter->SetPotDistance((int)(((RSz+1)/2)*300));
+	m_shooter->SetPotDistance((int)(((LSz+1)/2)*225)+100);
 	
 	UpdateSubsystems();
 } // TeleopPeriodic(void)
