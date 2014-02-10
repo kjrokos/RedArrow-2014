@@ -63,7 +63,10 @@ namespace Drive
         bool CommandUpdate();
     protected:
         float m_degrees;
-        Motion *m_pMotion;
+        float m_seconds;
+        bool m_hasStarted;
+        Motion *m_pMotionDriveLeft;
+        Motion *m_pMotionDriveRight;
     };
 };
 

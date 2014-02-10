@@ -20,7 +20,7 @@ public:
 	
 	float FB(float k, float pa, float ps);	//Feedback Function
 	
-	float Motion::AdjustVelocity(int currentCount, double time);
+	float Motion::AdjustVelocity(int currentCount, double time, bool debug=false);
 	void Reset(int count, double time, float move, double runTime);
 	void Reset();
 	

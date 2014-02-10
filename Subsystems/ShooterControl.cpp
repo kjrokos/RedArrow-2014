@@ -15,7 +15,7 @@ ShooterControl::ShooterControl(uint32_t outputChannel, uint32_t lowerLimitSwitch
 	m_lowerPosition(new DigitalInput(lowerLimitSwitchChannel)),
 	m_upperPosition(new DigitalInput(upperLimitSwitchChannel)),
 	m_pot(new AnalogChannel(positionChannel)), 
-	m_potStart(750),
+	m_potStart(465),
 	m_potDistance(382-200), 
 	m_setStart(kSetStartPosition)
 {
@@ -58,6 +58,7 @@ bool ShooterControl::Update()
 	SmartDashboard::PutNumber("Shooter Pot", m_pot->GetValue());
 	SmartDashboard::PutNumber("Start: ", m_potStart);
 	SmartDashboard::PutNumber("Distance: ", m_potDistance);
+	SmartDashboard::PutNumber("relaPot: ", relativePosition);
 	if(m_setStart == kSetStartPosition)
 	{
 		m_potStart = m_pot->GetValue();
@@ -69,7 +70,7 @@ bool ShooterControl::Update()
 	}
 	if(m_stflag == kShoot)
 	{
-		if(relativePosition > -m_potDistance && relativePosition <680)
+		if(relativePosition < m_potDistance)
 		{
 			m_speed = 1;
 		}
@@ -78,7 +79,7 @@ bool ShooterControl::Update()
 			m_speed = .6;
 		}
 		*/
-		if(relativePosition <= -m_potDistance)
+		if(relativePosition > m_potDistance)
 		{
 			m_stflag = kReset;
 		}
@@ -86,11 +87,11 @@ bool ShooterControl::Update()
 	
 	if(m_stflag == kReset)
 	{
-		if(relativePosition < -35)
+		if(relativePosition > 35)
 			m_speed = -.8;
-		if(relativePosition < 0 && relativePosition >= -35)
+		if(relativePosition > 0 && relativePosition <= 35)
 			m_speed = -.2;
-		if(relativePosition >= 0)
+		if(relativePosition <= 0)
 			m_stflag = kStop;
 	}
 	if(m_stflag == kStop)

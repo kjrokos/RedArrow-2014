@@ -40,7 +40,7 @@ float Motion::FB(float m_k, float pa, float ps)	//Feedbacm_k Algorithm
 	return v;
 }
 
-float Motion::AdjustVelocity(int currentCount, double time)
+float Motion::AdjustVelocity(int currentCount, double time, bool debug)
 {
 	float ReLT;
 	if(time-Motion::m_initTime>Motion::m_runTime) 
@@ -57,7 +57,9 @@ float Motion::AdjustVelocity(int currentCount, double time)
 	
 	if (m_active)
 	{
-		printf("  Motion::RelativeTime: %f currentP: %f", ReLT, currentP);
+		if(debug) {
+			printf("%f,%f,", ReLT, currentP);
+		}
 		return FB( Motion::m_k, currentP, currentCount); 
 	}
 	else { 

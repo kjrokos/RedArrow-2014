@@ -10,6 +10,7 @@
 #include "Subsystems/DriveTrain.h"
 #include "Subsystems/ShooterControl.h"
 #include "Subsystems/MotorControl.h"
+#include "Subsystems/DistanceSensor.h"
 
 
 class BuiltinDefaultCode : public IterativeRobot
@@ -51,6 +52,7 @@ public:
 	TwoStateServoControl *m_flag;
 	ShooterControl *m_shooter;
 	MotorControl *m_roller;
+	DistanceSensor *m_distanceSensor;
 	
 private:
 	AutonomousManager<BuiltinDefaultCode> *m_autonomousManager;

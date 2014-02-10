@@ -1,8 +1,8 @@
 #include "RedArrowMain.h"
 
 
-#define LEFT_DRIVE_PWM 1
-#define RIGHT_DRIVE_PWM 2
+#define LEFT_DRIVE_PWM 2
+#define RIGHT_DRIVE_PWM 1
 #define ROLLER_PWM 3
 #define SHOOTER_PWM 4
 
@@ -11,16 +11,21 @@
 #define LOWER_DI 1
 #define UPPER_DI 2
 
-#define LEFT_DRIVE_ENC_A 6
-#define LEFT_DRIVE_ENC_B 7
-#define RIGHT_DRIVE_ENC_A 8
-#define RIGHT_DRIVE_ENC_B 9
+#define LEFT_DRIVE_ENC_A 7
+#define LEFT_DRIVE_ENC_B 6
+#define RIGHT_DRIVE_ENC_A 9
+#define RIGHT_DRIVE_ENC_B 8
+
+//#define LEFT_DRIVE_ENC_A 8
+//#define LEFT_DRIVE_ENC_B 9
+//#define RIGHT_DRIVE_ENC_A 6
+//#define RIGHT_DRIVE_ENC_B 7
 
 #define GYRO 1
 #define SHOOTER_POT 2
+#define ULTRASONIC_SENSOR 3
 
-
-
+#define LIGHT_RELAY 1
 NextState AutonomousProgramA(BuiltinDefaultCode *robot, int32_t state)
 {
 	switch(state)
@@ -35,7 +40,7 @@ NextState AutonomousProgramA(BuiltinDefaultCode *robot, int32_t state)
 		//robot->m_feeder->ResetNumberOfFeeds();
 		//robot->m_unjammer->Lower();
 		//robot->m_robotDrive->SetSafetyEnabled(false);
-		robot->m_robotDrive->DriveDistance(.1,2);
+		robot->m_robotDrive->DriveDistance(3.1,5);
 		//robot->m_robotDrive->Rotate(90);
 
 		return NextState::EndState();
@@ -172,7 +177,8 @@ BuiltinDefaultCode::BuiltinDefaultCode(void)
 	m_shooter = new ShooterControl(SHOOTER_PWM, LOWER_DI, UPPER_DI, SHOOTER_POT);
 	m_flag = new TwoStateServoControl(FLAG_SERVO, 0.66, 0.10);
 	m_roller = new MotorControl(ROLLER_PWM, 1);
-	
+	m_distanceSensor = new DistanceSensor(LIGHT_RELAY, ULTRASONIC_SENSOR);
+
 
 	// Initialize AutonomousManager
 	m_autonomousManager = new AutonomousManager<BuiltinDefaultCode>(this, 0, 0);
@@ -204,6 +210,7 @@ BuiltinDefaultCode::~BuiltinDefaultCode(void)
 	delete m_autonomousManager;
 	delete m_roller;
 
+	delete m_distanceSensor;
 	//delete m_pot;
 	delete m_autonomousModeChooser;
 }
@@ -356,9 +363,9 @@ void BuiltinDefaultCode::GetDS()
 	m_robotDrive->GetLeftEncoder();
 	m_robotDrive->GetRightEncoder();
 
-	SmartDashboard::PutNumber("CodeVersion", 6);
+	SmartDashboard::PutNumber("CodeVersion", 7);
 
-}
+	}
 
 void BuiltinDefaultCode::ResetSubsystems()
 {
@@ -393,6 +400,7 @@ void BuiltinDefaultCode::ResetSubsystems()
 	LS_B10=false;
 	LS_B11=false;
 
+	m_distanceSensor->Reset();
 	m_flag->Reset();
 	m_robotDrive->Reset();
 	m_shooter->Reset();
@@ -405,6 +413,7 @@ bool BuiltinDefaultCode::UpdateSubsystems()
 	//m_robotDrive->GetRightEncoder();
 
 	bool finished = true;
+	finished = m_distanceSensor->Update()	&& finished;
 	finished = m_shooter->Update()    && finished;
 	finished = m_flag->Update()   && finished;
 	finished = m_robotDrive->Update() && finished;

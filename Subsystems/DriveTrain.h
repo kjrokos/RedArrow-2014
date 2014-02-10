@@ -38,6 +38,7 @@ class DriveTrain : public RobotDrive
     int GetRightEncoder();
 
     float GetEncoderCountsPerMeter();
+    float GetEncoderCountsPerFoot();
     float GetEncoderCountsPerDegree();
 
     void ResetAngle();

@@ -1,6 +1,6 @@
 //
 //  DriveCommands.cpp
-//  First 2013
+//  First 201
 //
 //  Created by Kyle Rokos on 2/7/13.
 //  Copyright (c) 2013 Kyle Rokos. All rights reserved.
@@ -74,7 +74,8 @@ namespace Drive {
     bool finished = false;
 
     double currentTime = Timer::GetPPCTimestamp();
-    float leftPower = m_pMotionDriveLeft->AdjustVelocity(m_driveTrain->GetLeftEncoder(), currentTime);
+    printf("%f,", currentTime);
+    float leftPower = m_pMotionDriveLeft->AdjustVelocity(m_driveTrain->GetLeftEncoder(), currentTime,true);
     float rightPower = m_pMotionDriveRight->AdjustVelocity(m_driveTrain->GetRightEncoder(), currentTime);
     if((.01 < leftPower || leftPower < -.01 )&&
         (.01 < rightPower || rightPower < -.01))
@@ -89,8 +90,9 @@ namespace Drive {
       rightPower = 0;
       finished = true;
     }
-    printf("In CommandUpdate::Distance setDistance = %f powerL=%f, powerR=%f\n", m_meters, leftPower, rightPower);
-    printf("	Current time = %f LeftEncoder = %f RightEncoder = %f\n", currentTime, (double) m_driveTrain->GetLeftEncoder(), (double) m_driveTrain->GetRightEncoder());
+    //time, rel time, current pos, left encoder, right encoder, left power, right power
+    printf("%f,%f,%f,%f\n", (double) m_driveTrain->GetLeftEncoder(), (double) m_driveTrain->GetRightEncoder(),leftPower, rightPower);
+    
     m_driveTrain->SetLeftRightMotorOutputs(leftPower, rightPower);
 
     return finished;
@@ -99,12 +101,11 @@ namespace Drive {
   Rotate::Rotate(DriveTrain *drive, float degrees)
     :Drive::DriveCommand(drive),
     m_degrees(degrees),
-    m_pMotion(new Motion(0.06))
+    m_seconds(fabs(degrees / drive->kMaxRotationDegreesPerSecond) + drive->kTimeRequiredToAccelerateToMaxVelocity),
+    m_hasStarted(false),
+    m_pMotionDriveLeft(new Motion(0.06)),
+    m_pMotionDriveRight(new Motion(0.06))
   {
-    while(m_degrees > 180)
-      m_degrees = m_degrees - 360;
-    while(m_degrees < -180)
-      m_degrees = m_degrees + 360;
   }
 
   bool Rotate::CommandInit()
@@ -139,7 +140,7 @@ namespace Drive {
       rightPower = 0;
       finished = true;
     }
-    printf("In CommandUpdate::Rotate setDegrees = %f powerL=%f, powerR=%f\n", m_meters, leftPower, rightPower);
+    printf("In CommandUpdate::Rotate setDegrees = %f powerL=%f, powerR=%f\n", m_degrees, leftPower, rightPower);
     printf("	Current time = %f LeftEncoder = %f RightEncoder = %f\n", currentTime, (double) m_driveTrain->GetLeftEncoder(), (double) m_driveTrain->GetRightEncoder());
     m_driveTrain->SetLeftRightMotorOutputs(leftPower, rightPower);
 
