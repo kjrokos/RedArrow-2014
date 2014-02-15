@@ -1,5 +1,6 @@
 #include "ShooterControl.h"
 #include "SmartDashboard/SmartDashboard.h"
+#include "Preferences.h"
 
 const int ShooterControl::kStop = 0;
 const int ShooterControl::kShoot = 1;
@@ -19,7 +20,7 @@ ShooterControl::ShooterControl(uint32_t outputChannel, uint32_t lowerLimitSwitch
 	m_potDistance(382-200), 
 	m_setStart(kSetStartPosition)
 {
-	
+	this->Reset();
 }
 
 ShooterControl::~ShooterControl()
@@ -32,6 +33,8 @@ ShooterControl::~ShooterControl()
 void ShooterControl::Reset()
 {
 	m_stflag = kStop;
+	Preferences *preferences = Preferences::GetInstance();
+	m_potDistance = preferences->GetInt("Shooter_Distance", m_potDistance);
 }
 
 void ShooterControl::SetStart()

@@ -29,7 +29,7 @@ private:
 	int m_optimum;
 	int m_optimumRange;
 	int m_flashRange;
-	double m_secondsPerFlash;
+	double m_minSecondsPerFlash;
 	double m_lastLightToggleTime;
 };
 

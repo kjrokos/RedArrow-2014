@@ -6,7 +6,7 @@
 #define ROLLER_PWM 3
 #define SHOOTER_PWM 4
 
-#define FLAG_SERVO 9
+#define FLAG_SERVO 10
 
 #define LOWER_DI 1
 #define UPPER_DI 2
@@ -175,7 +175,7 @@ BuiltinDefaultCode::BuiltinDefaultCode(void)
 			new DriveTrain(LEFT_DRIVE_PWM, RIGHT_DRIVE_PWM,LEFT_DRIVE_ENC_A, LEFT_DRIVE_ENC_B, RIGHT_DRIVE_ENC_A, RIGHT_DRIVE_ENC_B, GYRO);
 
 	m_shooter = new ShooterControl(SHOOTER_PWM, LOWER_DI, UPPER_DI, SHOOTER_POT);
-	m_flag = new TwoStateServoControl(FLAG_SERVO, 0.66, 0.10);
+	m_flag = new TwoStateServoControl(FLAG_SERVO, 0.66, 0.05);
 	m_roller = new MotorControl(ROLLER_PWM, 1);
 	m_distanceSensor = new DistanceSensor(LIGHT_RELAY, ULTRASONIC_SENSOR);
 
@@ -289,7 +289,14 @@ void BuiltinDefaultCode::TeleopPeriodic(void)
 
 	m_robotDrive->ArcadeDrive(-RSy ,-RSx);			// drive with arcade style (use right stick)
 
-
+	if(LS_B8)
+	{
+		m_flag->Lower();
+	}
+	if(LS_B9)
+	{
+		m_flag->Raise();
+	}
 	// do logic for decisions
 	if(LS_B1)			//Shoot Ball
 	{
