@@ -15,7 +15,7 @@ ShooterControl::ShooterControl(uint32_t outputChannel, uint32_t lowerLimitSwitch
 	m_lowerPosition(new DigitalInput(lowerLimitSwitchChannel)),
 	m_upperPosition(new DigitalInput(upperLimitSwitchChannel)),
 	m_pot(new AnalogChannel(positionChannel)), 
-	m_potStart(465),
+	m_potStart(m_pot->GetValue()),
 	m_potDistance(382-200), 
 	m_setStart(kSetStartPosition)
 {
@@ -68,6 +68,7 @@ bool ShooterControl::Update()
 	{
 		
 	}
+	
 	if(m_stflag == kShoot)
 	{
 		if(relativePosition < m_potDistance)

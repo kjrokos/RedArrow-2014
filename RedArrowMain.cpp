@@ -227,7 +227,7 @@ void BuiltinDefaultCode::RobotInit(void)
 	m_autonomousModeChooser->AddObject("B: Test", new std::string("middle"));
 	SmartDashboard::PutData("Autonomous Mode", m_autonomousModeChooser);
 	//Camera Initalization
-
+	
 
 
 
@@ -261,6 +261,7 @@ void BuiltinDefaultCode::TeleopInit(void)
 {	
 	ResetSubsystems();
 	m_robotDrive->StartEncoders();
+	
 }
 
 /********************************** Periodic Routines *************************************/
@@ -302,12 +303,12 @@ void BuiltinDefaultCode::TeleopPeriodic(void)
 	{
 		m_shooter->ManualControl(LSy);
 	}
-	if(LS_B2)
+	if(RS_B3)
 	{
 		m_roller->SpinCounterClockwise();
 		m_roller->SpeedAdjust(1.0);
 	}
-	else if(LS_B3)
+	else if(RS_B2 || RS_B1)
 	{
 		m_roller->SpinClockwise();
 		m_roller->SpeedAdjust(1.0);
