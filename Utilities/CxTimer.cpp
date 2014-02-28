@@ -73,7 +73,7 @@
 			m_myCurTime=tl;
 			return true;
 		}
-	return false;
+		return false;
 	};
 	
 	// declared outside of scope as global variables

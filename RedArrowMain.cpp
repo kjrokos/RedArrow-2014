@@ -7,6 +7,8 @@
 #define SHOOTER_PWM 4
 
 #define FLAG_SERVO 10
+#define GRIP_LEFT 9
+#define GRIP_RIGHT 8
 
 #define LOWER_DI 1
 #define UPPER_DI 2
@@ -21,6 +23,7 @@
 #define ULTRASONIC_SENSOR 3
 
 #define LIGHT_RELAY 1
+
 NextState AutonomousProgramA(BuiltinDefaultCode *robot, int32_t state)
 {
 	switch(state)
@@ -29,7 +32,7 @@ NextState AutonomousProgramA(BuiltinDefaultCode *robot, int32_t state)
 		robot->m_robotDrive->DriveDistance(3.812,5);
 		robot->m_roller->SpeedAdjust(1);
 		robot->m_roller->SpinStartClockwise();
-		return NextState(1,2,6);
+		return NextState(1,2,4);
 		break;
 	case 1:
 		robot->m_shooter->Shoot();
@@ -43,103 +46,36 @@ NextState AutonomousProgramA(BuiltinDefaultCode *robot, int32_t state)
 	return NextState::EndState();
 };
 
-/*NextState AutonomousProgramB(BuiltinDefaultCode *robot, int32_t state)
+NextState AutonomousProgramB(BuiltinDefaultCode *robot, int32_t state)
 {
 	switch(state)
-	{
-	case 0:
-		robot->m_elevation->SetPosition(400);//480
-		robot->m_shooter->Set(1);
-		robot->m_feeder->ResetNumberOfFeeds();
-		robot->m_unjammer->Lower();
-		return NextState(1,2,5);
-		break;
-	case 1:
-		if(robot->m_feeder->GetNumberOfFeeds() >= 2)
 		{
-			robot->m_shooter->Set(.9);
-			return NextState(2,1,2);
-		}
-		robot->m_feeder->Feed();
-		return NextState(1,3,3);
-		break;
-	case 2:
-		robot->m_feeder->Feed();
-		return NextState(3,3,3);
-		break;
-	case 3:
-		robot->m_shooter->Set(0);
-		robot->m_unjammer->Raise();
-		return NextState::EndState();
-		break;
-	default:
-		break;
-		}
-		return NextState::EndState();
-	};
-//FIX ARM CONTROL TO USE POT
-NextState AutonomousProgramC(BuiltinDefaultCode *robot, int32_t state)
-{
-	switch(state)
-	{
-	case 0:
-		robot->m_robotDrive->SetSafetyEnabled(false);
-		robot->m_robotDrive->DriveDistance(-2);
-		robot->m_feeder->ResetNumberOfFeeds();
-		robot->m_elevation->SetPosition(510);
-		return NextState(1,1);
-		break;
-	case 1:
-		robot->m_shooter->Set(1);
-#ifdef ARM_TYPE_POT
-		robot->m_arm->SetPosition(200);
-#else
-		robot->m_arm->ArmDown();
-#endif
-		return NextState(2,2);
-		break;
-	case 2:
-		if(robot->m_feeder->GetNumberOfFeeds() >= 3)
-			{
-			robot->m_shooter->Set(0);
-			return NextState(3,2);
-			}
-			robot->m_feeder->Feed();
-		return NextState(2,1);
-		break;
-	case 3:
-		robot->m_elevation->SetPosition(450);
-		robot->m_robotDrive->DriveDistance(2);
-		return NextState(4,1);
-		break;
-	case 4:
-#ifdef ARM_TYPE_POT
-		robot->m_arm->SetPosition(100);
-#else
-		robot->m_arm->ArmUp();
-#endif
-		robot->m_feeder->ResetNumberOfFeeds();
-		return NextState(5,1);
-		break;
-	case 5:
-		robot->m_shooter->Set(1);
-		return NextState(6,1);
-		break;
-	case 6:
-		if(robot->m_feeder->GetNumberOfFeeds() >= 2)
-		{
-			robot->m_shooter->Set(0);
-			return NextState::EndState();
-		}
-		robot->m_feeder->Feed();
-		return NextState(6,2);
-		break;
-	default:
+		case 0:
+			robot->m_robotDrive->DriveDistance(3.812,4);
+			robot->m_roller->SpeedAdjust(1);
+			robot->m_roller->SpinStartClockwise();
+			return NextState(1,2,4);
 			break;
-	}
-	return NextState::EndState();
-};
- */
+		case 1:
+			robot->m_shooter->Shoot();
+			return NextState(2,1,2);
+		case 2:
+			robot->m_robotDrive->DriveDistance(-4, 4);
+			return NextState(3,1,4);
+		case 3:
+			robot->m_robotDrive->DriveDistance(4, 4);
+			robot->m_roller->SpeedAdjust(1);
+			robot->m_roller->SpinStartClockwise();
+			return NextState(4,2,4);
+			break;
+		case 4:
+			robot->m_shooter->Shoot();
+			return NextState::EndState();
+		default:
+			break;
+		}
+		return NextState::EndState();
+}
 
 /**
  * Constructor for this "BuiltinDefaultCode" Class.
@@ -158,6 +94,8 @@ BuiltinDefaultCode::BuiltinDefaultCode(void)
 	m_shooter = new ShooterControl(SHOOTER_PWM, LOWER_DI, UPPER_DI, SHOOTER_POT);
 	m_flag = new TwoStateServoControl(FLAG_SERVO, 0.66, 0.05);
 	m_roller = new MotorControl(ROLLER_PWM, 1);
+	m_gripLeft = new TwoStateServoControl(GRIP_LEFT, .9, .8);
+	m_gripRight = new TwoStateServoControl(GRIP_RIGHT, .9, 1);
 	m_distanceSensor = new DistanceSensor(LIGHT_RELAY, ULTRASONIC_SENSOR);
 
 
@@ -204,8 +142,8 @@ void BuiltinDefaultCode::RobotInit(void)
 	// Actions which would be performed once (and only once) upon initialization of the
 	// robot would be put here.
 
-	m_autonomousModeChooser->AddDefault("A: Test", new std::string("side"));
-	m_autonomousModeChooser->AddObject("B: Test", new std::string("middle"));
+	m_autonomousModeChooser->AddDefault("A: One Ball", new std::string("one"));
+	m_autonomousModeChooser->AddObject("B: Two Balls", new std::string("two"));
 	SmartDashboard::PutData("Autonomous Mode", m_autonomousModeChooser);
 	//Camera Initalization
 	
@@ -224,15 +162,20 @@ void BuiltinDefaultCode::AutonomousInit(void)
 	//m_robotDrive->StartEncoders();
 	std::string mode = *((std::string*)m_autonomousModeChooser->GetSelected());
 	SmartDashboard::PutString("Autonomous Mode", mode);
-	/*
-	if(mode == "middle")
-		m_autonomousManager->SetStartState(AutonomousProgramB, 0);
-	else
-		m_autonomousManager->SetStartState(AutonomousProgramA, 0);
-	 */
 	this->m_watchdog.SetExpiration(0.2);
 	m_robotDrive->SetExpiration(0.2);
-	m_autonomousManager->SetStartState(AutonomousProgramA, 0);
+		
+	if(mode == "one")
+	{
+		m_autonomousManager->SetStartState(AutonomousProgramA, 0);
+	}
+	else 
+	{
+		m_autonomousManager->SetStartState(AutonomousProgramB, 0);
+	}
+	
+	
+	//m_autonomousManager->SetStartState(AutonomousProgramA, 0);
 	//m_autonomousManager->SetStartState(AutonomousProgramB, 0);
 	//m_autonomousManager->SetStartState(AutonomousProgramC, 0);
 	m_robotDrive->StartEncoders();
@@ -268,7 +211,7 @@ void BuiltinDefaultCode::TeleopPeriodic(void)
 
 
 
-	m_robotDrive->ManualControl(-RSy ,-RSx, ((RSz+1)/2));			// drive with arcade style (use right stick)
+	m_robotDrive->ManualControl(RSy ,-RSx, ((RSz+1)/2));			// drive with arcade style (use right stick)
 
 	if(LS_B8 || RS_B8)
 	{
@@ -278,6 +221,17 @@ void BuiltinDefaultCode::TeleopPeriodic(void)
 	{
 		m_flag->Raise();
 	}
+	if(RS_B6)
+	{
+		m_gripLeft->Raise();
+		m_gripRight->Raise();
+	}
+	if(RS_B7)
+	{
+		m_gripLeft->Lower();
+		m_gripRight->Lower();
+	}
+			
 	// do logic for decisions
 	if(LS_B1)			//Shoot Ball
 	{
@@ -409,6 +363,9 @@ bool BuiltinDefaultCode::UpdateSubsystems()
 	finished = m_distanceSensor->Update()	&& finished;
 	finished = m_shooter->Update()    && finished;
 	finished = m_flag->Update()   && finished;
+	finished = m_gripLeft->Update()   && finished;
+	finished = m_gripRight->Update()   && finished;
+			
 	finished = m_robotDrive->Update() && finished;
 	finished = m_roller->Update() && finished;
 	return finished;

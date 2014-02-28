@@ -48,7 +48,9 @@ public:
 	DriveTrain *m_robotDrive;
 	
 	CxTimer *m_t1;
-
+	
+	TwoStateServoControl *m_gripRight;
+	TwoStateServoControl *m_gripLeft;
 	TwoStateServoControl *m_flag;
 	ShooterControl *m_shooter;
 	MotorControl *m_roller;

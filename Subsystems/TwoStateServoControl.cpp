@@ -9,6 +9,8 @@
 #include "TwoStateServoControl.h"
 
 
+
+
 TwoStateServoControl::TwoStateServoControl(uint32_t outputID, float downPosition, float upPosition)
     : m_raised(false),
     m_servo(new Servo(outputID)),
@@ -31,7 +33,7 @@ void TwoStateServoControl::Reset()
 void TwoStateServoControl::Raise()
 {
     m_raised = true;
-};
+}
 
 void TwoStateServoControl::Lower()
 {
@@ -45,18 +47,17 @@ void TwoStateServoControl::SetState(bool up)
     else
         Lower();
 };
-
 bool TwoStateServoControl::IsRaised()
 {
-    return m_raised;
+	return m_raised;
 };
 
 bool TwoStateServoControl::Update()
 {
-	if(IsRaised())
-		m_servo->Set(m_upPosition);
-	else
-		m_servo->Set(m_downPosition);
+    if(IsRaised())
+        m_servo->Set(m_upPosition);
+    else
+    	m_servo->Set(m_downPosition);
 
 	return true;
 };

@@ -12,10 +12,11 @@
 #include <iostream>
 #include "WPILib.h"
 
+
 class TwoStateServoControl
 {
 public:
-    TwoStateServoControl(uint32_t outputID, float downPosition, float upPosition);
+	TwoStateServoControl(uint32_t outputID, float downPosition, float upPosition);
     ~TwoStateServoControl();
     
     void Reset();
@@ -24,8 +25,8 @@ public:
     void Lower();
     
     void SetState(bool up);
-    bool IsRaised();
     
+    bool IsRaised();
     // return true when current commands are finished
     bool Update();
     
@@ -34,6 +35,8 @@ private:
     Servo *m_servo;
     float m_downPosition;
     float m_upPosition;
+
+
 };
 
 #endif /* defined(__First_2013__TwoStateServoControl__) */

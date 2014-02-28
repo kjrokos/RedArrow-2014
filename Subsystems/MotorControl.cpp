@@ -71,7 +71,6 @@ bool MotorControl::Update()
 		break;
 	case STARTCLOCKWISE:
 		m_motor->Set(-m_speed);
-		printf("is working\n");
 		break;
 	case MANUALCONTROL:
 		m_motor->Set(m_speed);
