@@ -7,7 +7,8 @@ const int ShooterControl::kShoot = 1;
 const int ShooterControl::kReset = 2;
 const int ShooterControl::kManualControl = 3;
 const int ShooterControl::kSetStartPosition = 4;
-
+const int ShooterControl::kSoftShoot = 5;
+const int ShooterControl::kEReset = 6;
 
 
 ShooterControl::ShooterControl(uint32_t outputChannel, uint32_t lowerLimitSwitchChannel, uint32_t upperLimitSwitchChannel, uint32_t positionChannel)
@@ -17,7 +18,7 @@ ShooterControl::ShooterControl(uint32_t outputChannel, uint32_t lowerLimitSwitch
 	m_upperPosition(new DigitalInput(upperLimitSwitchChannel)),
 	m_pot(new AnalogChannel(positionChannel)), 
 	m_potStart(m_pot->GetValue()),
-	m_potDistance(382-200), 
+	m_potDistance(320), 
 	m_setStart(kSetStartPosition)
 {
 	this->Reset();
@@ -37,11 +38,25 @@ void ShooterControl::Reset()
 	m_potDistance = preferences->GetInt("Shooter_Distance", m_potDistance);
 }
 
+void ShooterControl::CheckEReset()
+{
+	if(m_pot->GetValue() > 600)
+	{	
+		m_stflag = kEReset;
+	}
+}
 void ShooterControl::SetStart()
 {
 	m_setStart = kSetStartPosition;
 }
 
+void ShooterControl::SoftShoot()
+{
+	if(m_stflag == kStop)
+	{
+		m_stflag = kSoftShoot;
+	}
+}
 void ShooterControl::Shoot()
 {
 	if(m_stflag == kStop)
@@ -52,8 +67,11 @@ void ShooterControl::Shoot()
 
 void ShooterControl::ManualControl(float speed)
 {
+	if(m_stflag != kEReset)
+	{
 	m_stflag = kManualControl;
 	m_speed = speed;
+	}
 }
 bool ShooterControl::Update()
 {	
@@ -72,6 +90,17 @@ bool ShooterControl::Update()
 		
 	}
 	
+	if(m_stflag == kSoftShoot)
+	{
+		if(relativePosition < m_potDistance)
+				{
+					m_speed = .35;
+				}
+				if(relativePosition > m_potDistance)
+				{
+					m_stflag = kReset;
+				}
+	}
 	if(m_stflag == kShoot)
 	{
 		if(relativePosition < m_potDistance)
@@ -88,7 +117,15 @@ bool ShooterControl::Update()
 			m_stflag = kReset;
 		}
 	}
-	
+	if(m_stflag == kEReset)		//Is there a better way to have EReset mean the same as Reset?
+		{
+			if(relativePosition > 35)	
+				m_speed = -.8;
+			if(relativePosition > 0 && relativePosition <= 35)
+				m_speed = -.2;
+			if(relativePosition <= 0)
+				m_stflag = kStop;
+		}
 	if(m_stflag == kReset)
 	{
 		if(relativePosition > 35)

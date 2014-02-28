@@ -16,11 +16,6 @@
 #define RIGHT_DRIVE_ENC_A 9
 #define RIGHT_DRIVE_ENC_B 8
 
-//#define LEFT_DRIVE_ENC_A 8
-//#define LEFT_DRIVE_ENC_B 9
-//#define RIGHT_DRIVE_ENC_A 6
-//#define RIGHT_DRIVE_ENC_B 7
-
 #define GYRO 1
 #define SHOOTER_POT 2
 #define ULTRASONIC_SENSOR 3
@@ -31,31 +26,17 @@ NextState AutonomousProgramA(BuiltinDefaultCode *robot, int32_t state)
 	switch(state)
 	{
 	case 0:
-		//robot->m_elevation->SetPosition(465);
-		//robot->m_elevation->SetPosition(435);
-		//robot->m_elevation->SetPosition(480);
-		//robot->m_elevation->SetPosition(400);//425
-		//robot->m_elevation->SetPosition(445);
-		//robot->m_shooter->Set(1);
-		//robot->m_feeder->ResetNumberOfFeeds();
-		//robot->m_unjammer->Lower();
-		//robot->m_robotDrive->SetSafetyEnabled(false);
-		robot->m_robotDrive->DriveDistance(3.1,5);
-		//robot->m_robotDrive->Rotate(90);
-
+		robot->m_robotDrive->DriveDistance(3.812,5);
+		robot->m_roller->SpeedAdjust(1);
+		robot->m_roller->SpinStartClockwise();
+		return NextState(1,2,6);
+		break;
+	case 1:
+		robot->m_shooter->Shoot();
+		return NextState(2,1,2);
+	case 2:
+		robot->m_roller->SpinStop();
 		return NextState::EndState();
-		break;
-		/*case 1:
-		if(robot->m_feeder->GetNumberOfFeeds() >= 3)
-		{
-			robot->m_shooter->Set(0);
-			robot->m_unjammer->Raise();
-			return NextState::EndState();
-		}
-		robot->m_feeder->Feed();
-		return NextState(1,2,3);
-		break;
-		 */
 	default:
 		break;
 	}
@@ -287,13 +268,13 @@ void BuiltinDefaultCode::TeleopPeriodic(void)
 
 
 
-	m_robotDrive->ArcadeDrive(-RSy ,-RSx);			// drive with arcade style (use right stick)
+	m_robotDrive->ManualControl(-RSy ,-RSx, ((RSz+1)/2));			// drive with arcade style (use right stick)
 
-	if(LS_B8)
+	if(LS_B8 || RS_B8)
 	{
 		m_flag->Lower();
 	}
-	if(LS_B9)
+	if(LS_B9 || RS_B9)
 	{
 		m_flag->Raise();
 	}
@@ -301,6 +282,10 @@ void BuiltinDefaultCode::TeleopPeriodic(void)
 	if(LS_B1)			//Shoot Ball
 	{
 		m_shooter->Shoot();
+	}
+	if(LS_B5)
+	{
+		m_shooter->SoftShoot();
 	}
 	if(LS_B7)
 	{
@@ -310,18 +295,18 @@ void BuiltinDefaultCode::TeleopPeriodic(void)
 	{
 		m_shooter->ManualControl(LSy);
 	}
-	if(RS_B3)
+	if(RS_B3 || LS_B3)
 	{
 		m_roller->SpinCounterClockwise();
 		m_roller->SpeedAdjust(1.0);
 	}
-	else if(RS_B2 || RS_B1)
+	if(RS_B2 || RS_B1 || LS_B2)
 	{
 		m_roller->SpinClockwise();
 		m_roller->SpeedAdjust(1.0);
 	}
-	
-	m_shooter->SetPotDistance((int)(((LSz+1)/2)*225)+100);
+	m_shooter->CheckEReset();
+
 	
 	UpdateSubsystems();
 } // TeleopPeriodic(void)

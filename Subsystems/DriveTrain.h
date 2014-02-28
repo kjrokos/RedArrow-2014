@@ -49,7 +49,7 @@ class DriveTrain : public RobotDrive
 
     void Rotate(float degrees);
 
-    void ManualControl(float stickX, float stickY, bool arcade=true);
+    void ManualControl(float stickX, float stickY, double overallSpeed, bool arcade=true);
 
     bool Update();
 

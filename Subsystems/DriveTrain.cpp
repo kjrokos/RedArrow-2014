@@ -132,9 +132,9 @@ void DriveTrain::Rotate(float degrees) {
 	m_commandQueue.push(new Drive::Rotate(this, degrees));
 }
 
-void DriveTrain::ManualControl(float stickX, float stickY, bool arcade) {
+void DriveTrain::ManualControl(float stickX, float stickY, double overallSpeed, bool arcade) {
 	if (arcade == true) {
-		this->ArcadeDrive(-stickX, stickY, true);
+		this->ArcadeDrive(-stickX*overallSpeed, stickY*overallSpeed, true);
 	} else {
 		this->TankDrive(-stickX, -stickY);
 	}
