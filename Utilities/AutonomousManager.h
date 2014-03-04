@@ -86,15 +86,20 @@ void AutonomousManager<Robot>::Run()
     NextState info;
     bool finished = m_closure->UpdateSubsystems();
     
-    if(m_nextState==-1)
-        return;
-    
+    if(m_nextState==-1) {
+        m_closure->ResetSubsystems();
+    	return;
+    }
     // continue on to next state when both conditions are true:
     // 1. all commands have finished
     // 2. minimum time has elapsed
     // or when the following condition is true:
     // 1. maximum time has elapsed (timeout)
-    if((finished && m_minTimer.CkTime(true, m_timeUntilNextState)) || m_maxTimer.CkTime(true, m_timeout))
+    bool minTimerHasFinished = m_minTimer.CkTime(true, m_timeUntilNextState);
+    bool maxTimerHasFinished = m_maxTimer.CkTime(true, m_timeout);
+    printf("Finished = %d, Time = %d\n", (int)finished, (int)m_maxTimer.GetTime());
+    printf("Min has finished: %d, Max has finished: %d\n", (int)minTimerHasFinished, (int)maxTimerHasFinished);
+    if((finished && minTimerHasFinished) || maxTimerHasFinished)
     {
         info = m_stateFunction(m_closure, m_nextState);
         m_minTimer.Reset();

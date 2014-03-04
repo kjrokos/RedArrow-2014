@@ -384,6 +384,7 @@
   C:/WindRiver/vxworks-6.3/target/h/WPILib/Vision/ColorImage.h \
   C:/WindRiver/vxworks-6.3/target/h/WPILib/WPIErrors.h \
   C:/WindRiver/workspace/redarrow2014A/Subsystems/DriveCommands.h \
+  C:/WindRiver/workspace/redarrow2014A/Subsystems/../Utilities/CxTimer.h \
   C:/WindRiver/workspace/redarrow2014A/Subsystems/../Utilities/motion.h \
   C:/WindRiver/workspace/redarrow2014A/Subsystems/../Utilities/poscntl.h
 
@@ -1152,6 +1153,8 @@ C:/WindRiver/vxworks-6.3/target/h/WPILib/Vision/ColorImage.h:
 C:/WindRiver/vxworks-6.3/target/h/WPILib/WPIErrors.h:
 
 C:/WindRiver/workspace/redarrow2014A/Subsystems/DriveCommands.h:
+
+C:/WindRiver/workspace/redarrow2014A/Subsystems/../Utilities/CxTimer.h:
 
 C:/WindRiver/workspace/redarrow2014A/Subsystems/../Utilities/motion.h:
 

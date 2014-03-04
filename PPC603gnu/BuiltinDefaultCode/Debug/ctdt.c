@@ -7,7 +7,7 @@
 /*       -fdollars-in-identifiers flag.                   */
 
 
-void _GLOBAL__I_C__WindRiver_workspace_redarrow2014A_Utilities_AutonomousManager_cpp_05647D79_FA09DEAD();
+void _GLOBAL__I_C__WindRiver_workspace_redarrow2014A_Utilities_AutonomousManager_cpp_05647D79_A1DEC608();
 
 void _GLOBAL__I__Z18AutonomousProgramAP18BuiltinDefaultCodel();
 
@@ -80,7 +80,7 @@ void _GLOBAL__I__ZN11StringArray19STRING_ARRAY_RAW_IDE();
 extern void (*_ctors[])();
 void (*_ctors[])() =
     {
-    _GLOBAL__I_C__WindRiver_workspace_redarrow2014A_Utilities_AutonomousManager_cpp_05647D79_FA09DEAD,
+    _GLOBAL__I_C__WindRiver_workspace_redarrow2014A_Utilities_AutonomousManager_cpp_05647D79_A1DEC608,
     _GLOBAL__I__Z18AutonomousProgramAP18BuiltinDefaultCodel,
     _GLOBAL__I__ZN10DriveTrain27kEncoderCountsPerRevolutionE,
     _GLOBAL__I__ZN13FeederControlC2Emm,
@@ -118,7 +118,7 @@ void (*_ctors[])() =
     0
     };
 
-void _GLOBAL__D__GLOBAL__I_C__WindRiver_workspace_redarrow2014A_Utilities_AutonomousManager_cpp_05647D79_FA09DEAD();
+void _GLOBAL__D__GLOBAL__I_C__WindRiver_workspace_redarrow2014A_Utilities_AutonomousManager_cpp_05647D79_A1DEC608();
 
 void _GLOBAL__D__Z18AutonomousProgramAP18BuiltinDefaultCodel();
 
@@ -181,7 +181,7 @@ void _GLOBAL__D__ZN11StringArray19STRING_ARRAY_RAW_IDE();
 extern void (*_dtors[])();
 void (*_dtors[])() =
     {
-    _GLOBAL__D__GLOBAL__I_C__WindRiver_workspace_redarrow2014A_Utilities_AutonomousManager_cpp_05647D79_FA09DEAD,
+    _GLOBAL__D__GLOBAL__I_C__WindRiver_workspace_redarrow2014A_Utilities_AutonomousManager_cpp_05647D79_A1DEC608,
     _GLOBAL__D__Z18AutonomousProgramAP18BuiltinDefaultCodel,
     _GLOBAL__D__ZN10DriveTrain27kEncoderCountsPerRevolutionE,
     _GLOBAL__D__ZN13FeederControlC2Emm,

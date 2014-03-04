@@ -55,6 +55,7 @@ public:
 	ShooterControl *m_shooter;
 	MotorControl *m_roller;
 	DistanceSensor *m_distanceSensor;
+	MotorControl *m_winch;
 	
 private:
 	AutonomousManager<BuiltinDefaultCode> *m_autonomousManager;

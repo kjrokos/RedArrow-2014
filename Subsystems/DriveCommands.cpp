@@ -61,8 +61,8 @@ namespace Drive {
   bool Distance::CommandInit()
   {
     m_driveTrain->StartEncoders();
-    double currentTime = Timer::GetPPCTimestamp();
-
+    double currentTime = Timer::GetFPGATimestamp();
+    printf("Timer: %f\n", currentTime);
     m_pMotionDriveLeft->Reset(m_driveTrain->GetLeftEncoder(), currentTime, m_meters * m_driveTrain->GetEncoderCountsPerMeter(), m_seconds);
     m_pMotionDriveRight->Reset(m_driveTrain->GetRightEncoder(), currentTime, m_meters * m_driveTrain->GetEncoderCountsPerMeter(), m_seconds);
     printf("In CommandInit(): LE: %f RE: %f Time: %f Clicks: %f duration: %f\n", (double)m_driveTrain->GetLeftEncoder(), (double)m_driveTrain->GetRightEncoder(), currentTime, m_meters * m_driveTrain->GetEncoderCountsPerMeter(), m_seconds);
@@ -73,9 +73,9 @@ namespace Drive {
   { 
     bool finished = false;
 
-    double currentTime = Timer::GetPPCTimestamp();
+    double currentTime = Timer::GetFPGATimestamp();
     printf("%f,", currentTime);
-    float leftPower = m_pMotionDriveLeft->AdjustVelocity(m_driveTrain->GetLeftEncoder(), currentTime,true);
+    float leftPower = m_pMotionDriveLeft->AdjustVelocity(m_driveTrain->GetLeftEncoder(), currentTime, true);
     float rightPower = m_pMotionDriveRight->AdjustVelocity(m_driveTrain->GetRightEncoder(), currentTime);
     if((.01 < leftPower || leftPower < -.01 )&&
         (.01 < rightPower || rightPower < -.01))
@@ -84,7 +84,6 @@ namespace Drive {
     }
     if(-0.01 < leftPower  && leftPower  < 0.01 &&
         -0.01 < rightPower && rightPower < 0.01 && m_hasStarted == true)
-      //if(leftPower == 0 && rightPower == 0)
     {
       leftPower = 0;
       rightPower = 0;
@@ -111,6 +110,7 @@ namespace Drive {
   bool Rotate::CommandInit()
   {
     double currentTime = Timer::GetPPCTimestamp();
+
     m_driveTrain->StartEncoders();
 
     m_pMotionDriveLeft->Reset(m_driveTrain->GetLeftEncoder(), currentTime, m_degrees * m_driveTrain->GetEncoderCountsPerDegree(), m_seconds);
@@ -124,7 +124,7 @@ namespace Drive {
   {
     bool finished = false;
 
-    double currentTime = Timer::GetPPCTimestamp();
+    double currentTime = Timer::GetFPGATimestamp();
     float leftPower = m_pMotionDriveLeft->AdjustVelocity(m_driveTrain->GetLeftEncoder(), currentTime);
     float rightPower = m_pMotionDriveRight->AdjustVelocity(m_driveTrain->GetRightEncoder(), currentTime);
     if((.01 < leftPower || leftPower < -.01 )&&
@@ -134,7 +134,6 @@ namespace Drive {
     }
     if(-0.01 < leftPower  && leftPower  < 0.01 &&
         -0.01 < rightPower && rightPower < 0.01 && m_hasStarted == true)
-      //if(leftPower == 0 && rightPower == 0)
     {
       leftPower = 0;
       rightPower = 0;

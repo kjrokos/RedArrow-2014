@@ -5,6 +5,7 @@
 #define RIGHT_DRIVE_PWM 1
 #define ROLLER_PWM 3
 #define SHOOTER_PWM 4
+#define WINCH_PWM 5
 
 #define FLAG_SERVO 10
 #define GRIP_LEFT 9
@@ -32,7 +33,7 @@ NextState AutonomousProgramA(BuiltinDefaultCode *robot, int32_t state)
 		robot->m_robotDrive->DriveDistance(3.812,5);
 		robot->m_roller->SpeedAdjust(1);
 		robot->m_roller->SpinStartClockwise();
-		return NextState(1,2,4);
+		return NextState(1,2,6);
 		break;
 	case 1:
 		robot->m_shooter->Shoot();
@@ -97,7 +98,7 @@ BuiltinDefaultCode::BuiltinDefaultCode(void)
 	m_gripLeft = new TwoStateServoControl(GRIP_LEFT, .9, .8);
 	m_gripRight = new TwoStateServoControl(GRIP_RIGHT, .9, 1);
 	m_distanceSensor = new DistanceSensor(LIGHT_RELAY, ULTRASONIC_SENSOR);
-
+	m_winch = new MotorControl(WINCH_PWM , 1);
 
 	// Initialize AutonomousManager
 	m_autonomousManager = new AutonomousManager<BuiltinDefaultCode>(this, 0, 0);
@@ -128,6 +129,7 @@ BuiltinDefaultCode::~BuiltinDefaultCode(void)
 	delete m_shooter;
 	delete m_autonomousManager;
 	delete m_roller;
+	delete m_winch;
 
 	delete m_distanceSensor;
 	//delete m_pot;
@@ -174,10 +176,7 @@ void BuiltinDefaultCode::AutonomousInit(void)
 		m_autonomousManager->SetStartState(AutonomousProgramB, 0);
 	}
 	
-	
 	//m_autonomousManager->SetStartState(AutonomousProgramA, 0);
-	//m_autonomousManager->SetStartState(AutonomousProgramB, 0);
-	//m_autonomousManager->SetStartState(AutonomousProgramC, 0);
 	m_robotDrive->StartEncoders();
 }
 
@@ -208,8 +207,6 @@ void BuiltinDefaultCode::TeleopPeriodic(void)
 
 	GetDS();
 	//bool leftJoystickIsUsed = false;
-
-
 
 	m_robotDrive->ManualControl(RSy ,-RSx, ((RSz+1)/2));			// drive with arcade style (use right stick)
 
@@ -249,17 +246,28 @@ void BuiltinDefaultCode::TeleopPeriodic(void)
 	{
 		m_shooter->ManualControl(LSy);
 	}
-	if(RS_B3 || LS_B3)
+	if(RS_B3)
 	{
 		m_roller->SpinCounterClockwise();
 		m_roller->SpeedAdjust(1.0);
 	}
-	if(RS_B2 || RS_B1 || LS_B2)
+	if(RS_B2 || RS_B1)
 	{
 		m_roller->SpinClockwise();
 		m_roller->SpeedAdjust(1.0);
 	}
-	m_shooter->CheckEReset();
+	if(LS_B2)
+	{
+		m_winch->SpinClockwise();
+		m_winch->SpeedAdjust(1.0);
+	}
+	if(LS_B3)
+	{
+		m_winch->SpinCounterClockwise();
+		m_winch->SpeedAdjust(1.0);
+	}
+	
+	//m_shooter->CheckEReset();
 
 	
 	UpdateSubsystems();
@@ -352,6 +360,7 @@ void BuiltinDefaultCode::ResetSubsystems()
 	m_robotDrive->Reset();
 	m_shooter->Reset();
 	m_roller->Reset();
+	m_winch->Reset();
 }
 
 bool BuiltinDefaultCode::UpdateSubsystems()
@@ -368,6 +377,7 @@ bool BuiltinDefaultCode::UpdateSubsystems()
 			
 	finished = m_robotDrive->Update() && finished;
 	finished = m_roller->Update() && finished;
+	finished = m_winch->Update() && finished;
 	return finished;
 
 }

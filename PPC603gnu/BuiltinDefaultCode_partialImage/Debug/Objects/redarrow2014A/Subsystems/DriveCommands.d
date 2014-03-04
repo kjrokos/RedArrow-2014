@@ -93,6 +93,7 @@
   C:/WindRiver/vxworks-6.3/target/h/vwModNum.h \
   C:/WindRiver/vxworks-6.3/target/h/base/b_struct_timespec.h \
   c:\windriver\gnu\3.4.4-vxworks-6.3\x86-win32\bin\../lib/gcc/powerpc-wrs-vxworks/3.4.4/../../../../include/c++/3.4.4/xlocinfo.h \
+  C:/WindRiver/workspace/redarrow2014A/Subsystems/../Utilities/CxTimer.h \
   C:/WindRiver/workspace/redarrow2014A/Subsystems/../Utilities/motion.h \
   C:/WindRiver/workspace/redarrow2014A/Subsystems/../Utilities/poscntl.h \
   C:/WindRiver/workspace/redarrow2014A/Subsystems/DriveTrain.h \
@@ -571,6 +572,8 @@ C:/WindRiver/vxworks-6.3/target/h/vwModNum.h:
 C:/WindRiver/vxworks-6.3/target/h/base/b_struct_timespec.h:
 
 c:\windriver\gnu\3.4.4-vxworks-6.3\x86-win32\bin\../lib/gcc/powerpc-wrs-vxworks/3.4.4/../../../../include/c++/3.4.4/xlocinfo.h:
+
+C:/WindRiver/workspace/redarrow2014A/Subsystems/../Utilities/CxTimer.h:
 
 C:/WindRiver/workspace/redarrow2014A/Subsystems/../Utilities/motion.h:
 
